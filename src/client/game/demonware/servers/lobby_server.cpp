@@ -57,7 +57,7 @@ namespace demonware
 				}
 				else if (size == 0xC8)
 				{
-#ifdef DEBUG
+#ifdef DW_DEBUG
 					printf("[DW]: [lobby]: received client_header_ack.\n");
 #endif
 
@@ -73,7 +73,7 @@ namespace demonware
 
 					raw_reply reply(packet_2);
 					this->send_reply(&reply);
-#ifdef DEBUG
+#ifdef DW_DEBUG
 					printf("[DW]: [lobby]: sending server_header_ack.\n");
 #endif
 					return;
@@ -90,7 +90,7 @@ namespace demonware
 
 					if (type == 0x82)
 					{
-#ifdef DEBUG
+#ifdef DW_DEBUG
 						printf("[DW]: [lobby]: received client_auth.\n");
 #endif
 						std::string packet_3(packet.data(), packet.size() - 8); // this 8 are client hash check?
@@ -105,7 +105,7 @@ namespace demonware
 						raw_reply reply(response);
 						this->send_reply(&reply);
 
-#ifdef DEBUG
+#ifdef DW_DEBUG
 						printf("[DW]: [lobby]: sending server_auth_done.\n");
 #endif
 						return;

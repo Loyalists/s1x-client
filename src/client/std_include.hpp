@@ -55,6 +55,10 @@
 #undef min
 #endif
 
+#ifdef DEBUG
+//#define DW_DEBUG
+#endif
+
 #include <atomic>
 #include <cassert>
 #include <chrono>

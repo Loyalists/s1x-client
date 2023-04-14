@@ -156,7 +156,7 @@ namespace fastfiles
 				a.popad64();
 				a.mov(r13d, game::DB_ZONE_CUSTOM);
 				a.not_(r13d);
-				a.and_(ebp, r13d);
+				a.and_(dil, r13d);
 				a.jmp(0x1401803EF);
 			}
 		}

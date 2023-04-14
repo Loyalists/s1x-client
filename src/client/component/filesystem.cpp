@@ -304,7 +304,7 @@ namespace filesystem
 				utils::hook::call(0x1404AF02F, register_custom_path_stub);
 			}
 
-			auto default_str = reinterpret_cast<const char*>(0x1407F7BF2);
+			auto default_str = reinterpret_cast<const char*>(SELECT_VALUE(0x1406908F0, 0x1407F7BF2));
 
 			// fs_game flags
 			dvars::override::register_string("fs_game", default_str, 0);

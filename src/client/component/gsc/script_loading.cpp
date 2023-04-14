@@ -229,7 +229,7 @@ namespace gsc
 
 		void gscr_post_load_scripts_stub()
 		{
-			utils::hook::invoke<void>(0x140323F20);
+			utils::hook::invoke<void>(SELECT_VALUE(0x140255F50, 0x140323F20));
 
 			if (game::VirtualLobby_Loaded())
 			{
@@ -280,12 +280,12 @@ namespace gsc
 				}
 			}
 
-			utils::hook::invoke<void>(0x1403380D0);
+			utils::hook::invoke<void>(SELECT_VALUE(0x14026A130, 0x1403380D0));
 		}
 
 		void scr_load_level_stub()
 		{
-			utils::hook::invoke<void>(0x140325B90);
+			utils::hook::invoke<void>(SELECT_VALUE(0x140257720, 0x140325B90));
 
 			if (game::VirtualLobby_Loaded())
 			{
@@ -376,21 +376,16 @@ namespace gsc
 
 			developer_script = game::Dvar_RegisterBool("developer_script", false, game::DVAR_FLAG_NONE, "Enable developer script comments");
 
-			if (game::environment::is_sp())
-			{
-				return;
-			}
-
 			// ProcessScript
-			utils::hook::call(0x1403F7317, find_script);
-			utils::hook::call(0x1403F7327, db_is_x_asset_default);
+			utils::hook::call(SELECT_VALUE(0x14031AB47, 0x1403F7317), find_script);
+			utils::hook::call(SELECT_VALUE(0x14031AB57, 0x1403F7327), db_is_x_asset_default);
 
 			// GScr_LoadScripts
-			utils::hook::call(0x140330B97, gscr_post_load_scripts_stub);
+			utils::hook::call(SELECT_VALUE(0x1402632C1, 0x140330B97), gscr_post_load_scripts_stub);
 
 			// Exec script handles
-			utils::hook::call(0x1402F71AE, g_load_structs_stub);
-			utils::hook::call(0x1402F71C7, scr_load_level_stub);
+			utils::hook::call(SELECT_VALUE(0x140226922, 0x1402F71AE), g_load_structs_stub);
+			utils::hook::call(SELECT_VALUE(0x140226931, 0x1402F71C7), scr_load_level_stub);
 
 			scripting::on_shutdown([](int free_scripts)
 			{

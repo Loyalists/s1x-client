@@ -12,7 +12,7 @@ namespace game
 	WEAK symbol<void(unsigned int id)> AddRefToObject{0, 0x1403F1F10};
 	WEAK symbol<unsigned int(unsigned int id)> AllocThread{0, 0x1403F2270};
 	WEAK symbol<void(int type, VariableUnion u)> RemoveRefToValue{0x140317340, 0x1403F3A50};
-	WEAK symbol<void(unsigned int id)> RemoveRefToObject{0, 0x1403F3940};
+	WEAK symbol<void(unsigned int id)> RemoveRefToObject{0x140317230, 0x1403F3940};
 
 	WEAK symbol<void(void*, void*)> AimAssist_AddToTargetList{0, 0x140001730};
 
@@ -158,9 +158,9 @@ namespace game
 	WEAK symbol<void(unsigned int id, scr_string_t stringValue, unsigned int paramcount)> Scr_NotifyId{0x14031CB80, 0x1403F92D0};
 	WEAK symbol<bool(VariableValue* value)> Scr_CastString{0x0, 0x1403F4500};
 
-	WEAK symbol<unsigned __int16(int handle, unsigned int paramcount)> Scr_ExecThread{0x0, 0x1403F8120};
-	WEAK symbol<unsigned int(const char* name)> Scr_LoadScript{0x0, 0x1403EE250};
-	WEAK symbol<unsigned int(const char* script, unsigned int name)> Scr_GetFunctionHandle{0x0, 0x1403EE0D0};
+	WEAK symbol<unsigned __int16(int handle, unsigned int paramcount)> Scr_ExecThread{0x14031B8C0, 0x1403F8120};
+	WEAK symbol<unsigned int(const char* name)> Scr_LoadScript{0x140311CD0, 0x1403EE250};
+	WEAK symbol<unsigned int(const char* script, unsigned int name)> Scr_GetFunctionHandle{0x140311B50, 0x1403EE0D0};
 	WEAK symbol<unsigned int(void* func, int type, unsigned int name)> Scr_RegisterFunction{0x1403115B0, 0x1403EDAE0};
 
 	WEAK symbol<unsigned int(unsigned int localId, const char* pos, unsigned int paramcount)> VM_Execute{0x0, 0x1403F9E40};

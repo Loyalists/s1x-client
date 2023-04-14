@@ -15,9 +15,15 @@ DECLSPEC_NORETURN void WINAPI exit_hook(const int code)
 }
 
 
+void post_unpack()
+{
+	game::set_unpacked();
+	component_loader::post_unpack();
+}
+
 BOOL WINAPI system_parameters_info_a(const UINT uiAction, const UINT uiParam, const PVOID pvParam, const UINT fWinIni)
 {
-	component_loader::post_unpack();
+	post_unpack();
 	return SystemParametersInfoA(uiAction, uiParam, pvParam, fWinIni);
 }
 
@@ -25,7 +31,7 @@ FARPROC WINAPI get_proc_address(const HMODULE hModule, const LPCSTR lpProcName)
 {
 	if (lpProcName == "GlobalMemoryStatusEx"s)
 	{
-		component_loader::post_unpack();
+		post_unpack();
 	}
 
 	return GetProcAddress(hModule, lpProcName);

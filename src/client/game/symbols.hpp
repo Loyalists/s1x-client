@@ -58,6 +58,7 @@ namespace game
 	WEAK symbol<int(const RawFile* rawfile)> DB_GetRawFileLen{0x14017E890, 0x14026FCC0};
 	WEAK symbol<void(const RawFile* rawfile, char* buf, int size)> DB_GetRawBuffer{0x14017E750, 0x14026FB90};
 	WEAK symbol<char*(const char* filename, char* buf, int size)> DB_ReadRawFile{0x140180E30, 0x140273080};
+	WEAK symbol<bool(const char* filename)> DB_IsLocalized{0x14017EC80, 0x140270190};
 
 	WEAK symbol<dvar_t*(const char* name)> Dvar_FindVar{0x140370860, 0x1404BF8B0};
 	WEAK symbol<void(const dvar_t* dvar)> Dvar_ClearModified{0x140370700, 0x1404BF690};
@@ -216,6 +217,7 @@ namespace game
 	WEAK symbol<void(unsigned int localClientNum, const char** args)> UI_RunMenuScript{0, 0x140490060};
 	WEAK symbol<int(const char* text, int maxChars, Font_s* font, float scale)> UI_TextWidth{0, 0x140492380};
 
+	WEAK symbol<const char* ()> SEH_GetCurrentLanguageCode{0x140339280, 0x140474560};
 	WEAK symbol<const char*()> SEH_GetCurrentLanguageName{0x140339300, 0x1404745C0};
 
 	WEAK symbol<void*(unsigned int size, unsigned int alignment, unsigned int type, int source)> PMem_AllocFromSource_NoDebug{0x1403775F0, 0x1404C7BA0};
@@ -258,6 +260,7 @@ namespace game
 	WEAK symbol<XAssetEntry> g_assetEntryPool{0x142CC2400, 0x14379F100};
 	WEAK symbol<int> g_poolSize{0x140804140, 0x1409B4B90};
 	WEAK symbol<const char*> g_assetNames{0x140803C90, 0x1409B3180};
+	WEAK symbol<int> g_compressor{0x141598580, 0x141E0B080};
 
 	WEAK symbol<DWORD> threadIds{0x149632EC0, 0x147DCEA30};
 

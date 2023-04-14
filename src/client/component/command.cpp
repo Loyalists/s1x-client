@@ -11,6 +11,7 @@
 #include "game_console.hpp"
 #include "scheduler.hpp"
 #include "fastfiles.hpp"
+#include "dvars.hpp"
 
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
@@ -101,10 +102,44 @@ namespace command
 			parsed = true;
 		}
 
+		void parse_startup_variables()
+		{
+			auto& com_num_console_lines = *reinterpret_cast<int*>(0x147B76504);
+			auto* com_console_lines = reinterpret_cast<char**>(0x147B76510);
+
+			for (int i = 0; i < com_num_console_lines; i++)
+			{
+				game::Cmd_TokenizeString(com_console_lines[i]);
+
+				// only +set dvar value
+				if (game::Cmd_Argc() >= 3 && game::Cmd_Argv(0) == "set"s)
+				{
+					const std::string& dvar_name = game::Cmd_Argv(1);
+					const std::string& value = game::Cmd_Argv(2);
+
+					const auto* dvar = game::Dvar_FindVar(dvar_name.data());
+					if (dvar)
+					{
+						game::Dvar_SetCommand(dvar_name.data(), value.data());
+					}
+					else
+					{
+						dvars::callback::on_register(dvar_name, [dvar_name, value]()
+						{
+							game::Dvar_SetCommand(dvar_name.data(), value.data());
+						});
+					}
+				}
+
+				game::Cmd_EndTokenizeString();
+			}
+		}
+
 		void parse_commandline_stub()
 		{
+			utils::hook::invoke<void>(0x1403D1AC0); // Com_ParseCommandLine
 			parse_command_line();
-			reinterpret_cast<void(*)()>(0x1403CEE10)();
+			parse_startup_variables();
 		}
 	}
 
@@ -278,7 +313,7 @@ namespace command
 			}
 			else
 			{
-				utils::hook::call(0x1403CDF1C, &parse_commandline_stub);
+				utils::hook::call(0x1403CFF2F, &parse_commandline_stub);
 				add_commands_mp();
 			}
 

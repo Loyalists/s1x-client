@@ -15,6 +15,28 @@ namespace filesystem
 {
 	namespace
 	{
+		auto get_fs_game()
+		{
+			std::optional<std::string> fs_game_string;
+
+			const auto fs_game = game::Dvar_FindVar("fs_game");
+			if (fs_game && fs_game->current.string)
+			{
+				fs_game_string = fs_game->current.string;
+			}
+			else
+			{
+				fs_game_string.reset();
+			}
+
+			return fs_game_string;
+		}
+	}
+
+	namespace
+	{
+		bool unpacked = false;
+
 		bool initialized = false;
 
 		bool custom_path_registered = false;
@@ -23,6 +45,22 @@ namespace filesystem
 		{
 			static std::deque<std::filesystem::path> search_paths{};
 			return search_paths;
+		}
+
+		std::deque<std::filesystem::path> get_search_paths_with_mod()
+		{
+			std::deque<std::filesystem::path> paths = get_search_paths_internal(); // make a copy
+
+			if (unpacked)
+			{
+				const auto fs_game = get_fs_game();
+				if (fs_game.has_value())
+				{
+					paths.push_back(std::filesystem::path(fs_game.value()));
+				}
+			}
+
+			return paths;
 		}
 
 		std::string get_binary_directory()
@@ -118,7 +156,7 @@ namespace filesystem
 	{
 		check_for_startup();
 
-		for (const auto& search_path : get_search_paths_internal())
+		for (const auto& search_path : get_search_paths_with_mod())
 		{
 			const auto path_ = search_path / path;
 			if (utils::io::file_exists(path_.generic_string()))
@@ -134,7 +172,7 @@ namespace filesystem
 	{
 		check_for_startup();
 
-		for (const auto& search_path : get_search_paths_internal())
+		for (const auto& search_path : get_search_paths_with_mod())
 		{
 			const auto path_ = search_path / path;
 			if (utils::io::read_file(path_.generic_string(), data))
@@ -155,7 +193,7 @@ namespace filesystem
 	{
 		check_for_startup();
 
-		for (const auto& search_path : get_search_paths_internal())
+		for (const auto& search_path : get_search_paths_with_mod())
 		{
 			const auto path_ = search_path / path;
 			if (utils::io::file_exists(path_.generic_string()))
@@ -172,7 +210,7 @@ namespace filesystem
 	{
 		check_for_startup();
 
-		for (const auto& search_path : get_search_paths_internal())
+		for (const auto& search_path : get_search_paths_with_mod())
 		{
 			const auto path_ = search_path / path;
 			if (utils::io::file_exists(path_.generic_string()))
@@ -219,7 +257,7 @@ namespace filesystem
 	{
 		std::vector<std::string> paths{};
 
-		for (const auto& path : get_search_paths_internal())
+		for (const auto& path : get_search_paths_with_mod())
 		{
 			paths.push_back(path.generic_string());
 		}
@@ -230,7 +268,7 @@ namespace filesystem
 	std::vector<std::string> get_search_paths_rev()
 	{
 		std::vector<std::string> paths{};
-		const auto& search_paths = get_search_paths_internal();
+		const auto& search_paths = get_search_paths_with_mod();
 
 		for (auto i = search_paths.rbegin(); i != search_paths.rend(); ++i)
 		{
@@ -265,6 +303,13 @@ namespace filesystem
 				utils::hook::call(0x1404AEFF0, register_custom_path_stub);
 				utils::hook::call(0x1404AF02F, register_custom_path_stub);
 			}
+
+			auto default_str = reinterpret_cast<const char*>(0x1407F7BF2);
+
+			// fs_game flags
+			dvars::override::register_string("fs_game", default_str, 0);
+
+			unpacked = true;
 		}
 	};
 }

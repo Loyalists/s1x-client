@@ -197,12 +197,31 @@ namespace dvars
 		}
 	}
 
+	namespace callback
+	{
+		static std::unordered_map<std::string, std::function<void(game::dvar_value*)>> dvar_new_value_callbacks;
+
+		static std::unordered_map<std::string, std::function<void()>> dvar_on_register_function_map;
+
+		void on_new_value(const std::string& name, const std::function<void(game::dvar_value*)> callback)
+		{
+			dvar_new_value_callbacks[name] = callback;
+		}
+
+		void on_register(const std::string& name, const std::function<void()>& callback)
+		{
+			dvar_on_register_function_map[name] = callback;
+		}
+	}
+
 	utils::hook::detour dvar_register_bool_hook;
 	utils::hook::detour dvar_register_float_hook;
 	utils::hook::detour dvar_register_int_hook;
 	utils::hook::detour dvar_register_string_hook;
 	utils::hook::detour dvar_register_vector2_hook;
 	utils::hook::detour dvar_register_vector3_hook;
+
+	utils::hook::detour dvar_register_new_hook;
 
 	utils::hook::detour dvar_set_bool_hook;
 	utils::hook::detour dvar_set_float_hook;
@@ -364,6 +383,20 @@ namespace dvars
 		return dvar_set_string_hook.invoke<void>(dvar, string);
 	}
 
+	game::dvar_t* dvar_register_new(const char* name, game::dvar_type type, unsigned int flags,
+		game::dvar_value* value, game::dvar_limits* domain, const char* description)
+	{
+		auto* dvar = dvar_register_new_hook.invoke<game::dvar_t*>(name, type, flags, value, domain, description);
+
+		if (dvar && callback::dvar_on_register_function_map.find(name) != callback::dvar_on_register_function_map.end())
+		{
+			callback::dvar_on_register_function_map[name]();
+			callback::dvar_on_register_function_map.erase(name);
+		}
+
+		return dvar;
+	}
+
 	class component final : public component_interface
 	{
 	public:
@@ -375,6 +408,8 @@ namespace dvars
 			dvar_register_string_hook.create(SELECT_VALUE(0x140372050, 0x1404C1450), &dvar_register_string_stub);
 			dvar_register_vector2_hook.create(SELECT_VALUE(0x140372120, 0x1404C1520), &dvar_register_vector2_stub);
 			dvar_register_vector3_hook.create(SELECT_VALUE(0x140372230, 0x1404C1600), &dvar_register_vector3_stub);
+
+			dvar_register_new_hook.create(SELECT_VALUE(0x140371DC0, 0x1404C1150), &dvar_register_new);
 
 			dvar_set_bool_hook.create(SELECT_VALUE(0x140372B70, 0x1404C1F30), &dvar_set_bool_stub);
 			dvar_set_float_hook.create(SELECT_VALUE(0x140373420, 0x1404C2A10), &dvar_set_float_stub);

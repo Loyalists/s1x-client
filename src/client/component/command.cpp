@@ -135,9 +135,9 @@ namespace command
 			}
 		}
 
-		void parse_commandline_stub()
+		void parse_commandline_stub(const char* commandline)
 		{
-			utils::hook::invoke<void>(0x1403D1AC0); // Com_ParseCommandLine
+			utils::hook::invoke<void>(SELECT_VALUE(0x1402F9290, 0x1403D1AC0), commandline); // Com_ParseCommandLine
 			parse_command_line();
 			parse_startup_variables();
 		}
@@ -307,13 +307,14 @@ namespace command
 	public:
 		void post_unpack() override
 		{
+			utils::hook::call(SELECT_VALUE(0x1402F8BAA, 0x1403CFF2F), &parse_commandline_stub);
+
 			if (game::environment::is_sp())
 			{
 				add_commands_sp();
 			}
 			else
 			{
-				utils::hook::call(0x1403CFF2F, &parse_commandline_stub);
 				add_commands_mp();
 			}
 

@@ -23,13 +23,24 @@ namespace game
 		std::string get_string();
 	}
 
+	bool is_unpacked();
+	void set_unpacked();
+
+	int Cmd_Argc();
+	const char* Cmd_Argv(int index);
+
+	int SV_Cmd_Argc();
+	const char* SV_Cmd_Argv(int index);
+
+	bool VirtualLobby_Loaded();
+
 	template <typename T>
 	class symbol
 	{
 	public:
 		symbol(const size_t sp_address, const size_t mp_address)
 			: sp_object_(reinterpret_cast<T*>(sp_address))
-			  , mp_object_(reinterpret_cast<T*>(mp_address))
+			, mp_object_(reinterpret_cast<T*>(mp_address))
 		{
 		}
 
@@ -43,7 +54,7 @@ namespace game
 			return mp_object_;
 		}
 
-		operator T*() const
+		operator T* () const
 		{
 			return this->get();
 		}
@@ -57,17 +68,6 @@ namespace game
 		T* sp_object_;
 		T* mp_object_;
 	};
-
-	bool is_unpacked();
-	void set_unpacked();
-
-	int Cmd_Argc();
-	const char* Cmd_Argv(int index);
-
-	int SV_Cmd_Argc();
-	const char* SV_Cmd_Argv(int index);
-
-	bool VirtualLobby_Loaded();
 }
 
 #include "symbols.hpp"

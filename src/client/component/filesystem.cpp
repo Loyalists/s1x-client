@@ -35,8 +35,6 @@ namespace filesystem
 
 	namespace
 	{
-		bool unpacked = false;
-
 		bool initialized = false;
 
 		bool custom_path_registered = false;
@@ -51,7 +49,7 @@ namespace filesystem
 		{
 			std::deque<std::filesystem::path> paths = get_search_paths_internal(); // make a copy
 
-			if (unpacked)
+			if (game::is_unpacked())
 			{
 				const auto fs_game = get_fs_game();
 				if (fs_game.has_value())
@@ -308,8 +306,6 @@ namespace filesystem
 
 			// fs_game flags
 			dvars::override::register_string("fs_game", default_str, 0);
-
-			unpacked = true;
 		}
 	};
 }

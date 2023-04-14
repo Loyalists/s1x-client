@@ -58,6 +58,9 @@ namespace game
 		T* mp_object_;
 	};
 
+	bool is_unpacked();
+	void set_unpacked();
+
 	int Cmd_Argc();
 	const char* Cmd_Argv(int index);
 
